@@ -1,0 +1,8 @@
+* make initiation check a plugin option (in the case of generated element needing modal)
+* some of the functions that control things like fade in/out speed should be configurable settings
+* init settings allow for different classes on your modal
+    * could you use "template:" for the html?
+* make the way the modal shows a setting (fade in the modal, have it swoop in bootstrap style, fade in 3d transform, etc.)
+* get proxy working with ajax stuff
+* (line 115) - check on ways to close the modal with what is inside it(the form with the close button)
+* move if modal has "-persist" to method (line 149 and just above & line 209)
