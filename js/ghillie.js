@@ -1,30 +1,18 @@
 (function($){
     var methods = {
         init : function(options) {
-            // use settings to hold the default class names of the modal elements we'll be creating later
-            var settings = {
-                'modalWrap'     : 'modal_message',
-                'modalHead'     : 'modal_header',
-                'modalBody'     : 'modal_body',
-                'modalFoot'     : 'modal_footer',
-                'backdrop'      : 'modal_overlay'
-            };
-
             // we're going to use an array for all of our variables so we can easily pass them from method to method
             var vars = {
                 'link'          : $(this).attr('href'),
                 'title'         : $(this).attr('title'),
                 'rel'           : $(this).attr('rel'),
                 'modalData'     : $(this).data(),
-                '$modal'        : '',
-                '$backdrop'     : ''
+                '$modal'        : ''
             }
 
             return this.each(function() {
                 // if options exist, lets merge them with our default settings
-                if (options) {
-                    $.extend(settings, options);
-                }
+                var settings = $.extend({}, $.fn.lwModal.defaults, options);
 
                 // the function that controls the logic for what happens next
                 function modalLogic(e) {
@@ -37,7 +25,7 @@
 
                     // if the modal already exists, let's fire the toggle method (we're relying on the url being set as the rel value for the modal in the build method to tie the link and the modal box together - we're also making sure the modal_life data attribute is the same as the link to keep the different types of modals segregated)
                     if (vars.$modal.length) {
-                        $(this).lwModal('toggle', settings, vars);
+                        $(this).lwModal('toggle', vars.$modal);
 
                     // if it doesn't already exist, let's build it
                     } else {
@@ -57,8 +45,13 @@
                 // go ahead and create and show the loading message (so it is in place while the modal is being created - especially important if the message comes from an external page)
                 $(this).lwModal('loadingCreate');
 
+                // see if there should be an extra class on the modal
+                var extraClass = '';
+                if (settings.extraClass) {
+                    extraClass = ' ' + settings.extraClass;
+                }
                 // start building the modal box
-                vars.$modal = $('<div class="'+settings.modalWrap+'" rel="'+vars.link+'" data-modal_life="'+vars.modalData.modal_life+'" style="display:none;"></div>');
+                vars.$modal = $('<div class="'+settings.modalWrap+extraClass+'" rel="'+vars.link+'" data-modal_life="'+vars.modalData.modal_life+'" data-modal_speed="'+settings.speed+'" style="display:none;"></div>');
 
                 // assign all data elements from the calling link to the created modal (we'll use this for persistance rules and other settings later)
                 vars.$modal.data(vars.modalData);
@@ -88,13 +81,19 @@
 
                     // build the backdrop if it doesn't exist
                     // first, let's assign the backdrop to a variable
-                    vars.$backdrop = $('.'+settings.backdrop);
-                    if (!vars.$backdrop.length) {
-                        vars.$modal.lwModal('backdropCreate', settings, vars);
+                    $.fn.lwModal.$backdrop = $('.'+settings.backdrop);
+                    if (!$.fn.lwModal.$backdrop.length) {
+                        vars.$modal.lwModal('backdropCreate', settings);
                     }
 
                     // fire the show function as the last step of the build
                     vars.$modal.lwModal('show', settings, vars);
+
+                    // bind click functionality for close buttons
+                    vars.$modal.find(".close a, a.close").bind('click.modal', function(e) {
+                        e.preventDefault();
+                        vars.$modal.lwModal('hide');
+                    });
                 }
 
                 // add the target html to the modal body
@@ -111,51 +110,31 @@
                         vars.$modal.load(vars.link, modalLoadingComplete);
                     }
                 }
-
-                // bind click functionality for close buttons
-                vars.$modal.find(".close a, a.close").bind('click.modal', function(e) {
-                    e.preventDefault();
-
-                    if (vars.modalData.modal_life && vars.modalData.modal_life.toLowerCase() === 'persist') {
-                        vars.$modal.lwModal('hide', vars);
-                    } else {
-                        vars.$modal.lwModal('hide', vars, 'remove');
-                    }
-                });
             });
         },
-        toggle : function(settings, vars) {
+        toggle : function(modal) {
             return this.each(function() {
                 // check to see if it is visible
                 // if it is, do the logic for hiding or removing it
-                if (vars.$modal.is(':visible')) {
-                    if (vars.modalData.modal_life && vars.modalData.modal_life.toLowerCase() === 'persist') {
-                        vars.$modal.lwModal('hide', vars);
-                    } else {
-                        vars.$modal.lwModal('hide', vars, 'remove');
-                    }
-
+                if (modal.is(':visible')) {
+                    modal.lwModal('hide');
                 // if it's not visible, let's fire the show function
                 } else {
-                    vars.$modal.lwModal('show', settings, vars);
+                    modal.lwModal('show');
                 }
             });
         },
-        show : function(settings, vars) {
+        show : function() {
             return this.each(function() {
-                // first, let's toggle any currently visible modal boxes
-                $('.'+settings.modalWrap).filter(':visible').each(function() {
-                    if ($(this).data('modal_life') && $(this).data('modal_life').toLowerCase() === 'persist') {
-                        $(this).lwModal('hide', vars);
-                    } else {
-                        $(this).lwModal('hide', vars, 'remove');
-                    }
+                // first, let's hide any currently visible modal boxes
+                $('.'+$.fn.lwModal.defaults.modalWrap).filter(':visible').each(function() {
+                    $(this).lwModal('hide');
                 });
                 // then, let's remove and currently visible loading graphics
                 $('.loading').lwModal('loadingRemove');
 
                 // then, turn on the backdrop
-                vars.$backdrop.lwModal('backdropShow');
+                $.fn.lwModal.$backdrop.lwModal('backdropShow');
 
                 // finally, display the modal
                 var windowHeight = $(window).height();
@@ -177,38 +156,35 @@
                     });
                 }
                 // fade the modal in
-                $(this).fadeIn();
+                // TODO: add setting for fadeIn speed, or make it css
+                $(this).fadeIn($(this).data('modal_speed'));
             });
         },
-        hide : function(vars, remove) {
+        hide : function() {
             return this.each(function() {
                 // first, turn off the backdrop
-                vars.$backdrop.lwModal('backdropHide');
+                $.fn.lwModal.$backdrop.lwModal('backdropHide');
 
                 // then, hide the modal
-                $(this).fadeOut(400, function() {
-                    if (remove) {
+                $(this).fadeOut($(this).data('modal_speed'), function() {
+                    if (!$(this).data('modal_life') || $(this).data('modal_life').toLowerCase() !== 'persist') {
                         $(this).remove();
                     }
                 });
             });
         },
-        backdropCreate : function(settings, vars) {
+        backdropCreate : function(settings) {
             return this.each(function() {
                 // build the backdrop
-                vars.$backdrop = $('<div class="'+settings.backdrop+'" style="display:none;"></div>');
+                $.fn.lwModal.$backdrop = $('<div class="'+settings.backdrop+'" style="display:none;"></div>');
 
                 // insert the backdrop
-                vars.$backdrop.insertBefore(this);
+                $.fn.lwModal.$backdrop.insertBefore(this);
 
                 // setup behavior so that a click on the backdrop hides the visible modal
-                vars.$backdrop.click(function() {
+                $.fn.lwModal.$backdrop.click(function() {
                     $('.'+settings.modalWrap).filter(':visible').each(function() {
-                        if ($(this).data('modal_life') && $(this).data('modal_life').toLowerCase() === 'persist') {
-                            $(this).lwModal('hide', vars);
-                        } else {
-                            $(this).lwModal('hide', vars, 'remove');
-                        }
+                        $(this).lwModal('hide');
                     });
                 });
             });
@@ -217,17 +193,17 @@
             return this.each(function() {
                 $(this).css({
                     height: $(document).height()
-                }).fadeIn();
+                }).fadeIn($.fn.lwModal.defaults.speed);
             });
         },
         backdropHide : function() {
             return this.each(function() {
-                $(this).fadeOut(400);
+                $(this).fadeOut($.fn.lwModal.defaults.speed);
             });
         },
         loadingCreate : function() {
             return this.each(function() {
-                $('<div class="loading" style="display:none;"></div>').appendTo('body').fadeIn(1500);
+                $('<div class="loading" style="display:none;"></div>').appendTo('body').fadeIn($.fn.lwModal.defaults.speed);
             });
         },
         loadingRemove: function() {
@@ -247,14 +223,35 @@
             $.error('Method ' +  method + ' does not exist on jQuery.lwModal');
         }
     };
+
+    // Let's setup defaults that will be available to all of our methods
+    // use settings to hold the default class names of the modal elements we'll be creating later
+    $.fn.lwModal.defaults = {
+        'modalWrap'     : 'modal_message',
+        'modalHead'     : 'modal_header',
+        'modalBody'     : 'modal_body',
+        'modalFoot'     : 'modal_footer',
+        'backdrop'      : 'modal_overlay',
+        'speed'         : 400,
+        'extraClass'    : ''
+    };
 })(jQuery);
 
 
 jQuery(document).ready(function() {
+    // the delegation is so the plugin functionality is attached to generated items or items that load on the page after this script first runs
     jQuery('body').delegate('.modal', 'click', function(e) {
         if (!jQuery(this).data('modal-init')) {
             e.preventDefault();
             jQuery(this).data('modal-init', true).lwModal();
+        }
+    });
+    jQuery('body').delegate('.modal-large', 'click', function(e) {
+        if (!jQuery(this).data('modal-init')) {
+            e.preventDefault();
+            jQuery(this).data('modal-init', true).lwModal({
+                'extraClass' : 'large'
+            });
         }
     });
 
@@ -262,7 +259,12 @@ jQuery(document).ready(function() {
 
     // this is only for testing the delegation of the functionality
     jQuery('.create a').click(function() {
-        jQuery(this).parent().after('<a class="author modal" data-modal-life="" title="generated test title" href="#author2">Jane L. Doe</a>');
+        jQuery(this).parent().after('<a class="author modal" title="generated test title" href="#author3">Author 3</a>');
         return false;
+    });
+    // this is only for testing a remote hide of the modal
+    jQuery('body').delegate('.hide a', 'click', function(e) {
+        e.preventDefault();
+        jQuery(this).closest('.'+$.fn.lwModal.defaults.modalWrap).lwModal('hide');
     });
 });
