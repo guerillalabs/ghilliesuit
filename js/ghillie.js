@@ -213,20 +213,20 @@
         }
     };
 
-    $.fn.lwModal = function(method) {
+    $.fn.glGhillie = function(method) {
         // Method calling logic
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || ! method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' +  method + ' does not exist on jQuery.lwModal');
+            $.error('Method ' +  method + ' does not exist on jQuery.glGhillie');
         }
     };
 
     // Let's setup defaults that will be available to all of our methods
     // use settings to hold the default class names of the modal elements we'll be creating later
-    $.fn.lwModal.defaults = {
+    $.fn.glGhillie.defaults = {
         'modalWrap'     : 'modal_message',
         'modalHead'     : 'modal_header',
         'modalBody'     : 'modal_body',
@@ -243,13 +243,13 @@ jQuery(document).ready(function() {
     jQuery('body').delegate('.modal', 'click', function(e) {
         if (!jQuery(this).data('modal-init')) {
             e.preventDefault();
-            jQuery(this).data('modal-init', true).lwModal();
+            jQuery(this).data('modal-init', true).glGhillie();
         }
     });
     jQuery('body').delegate('.modal-large', 'click', function(e) {
         if (!jQuery(this).data('modal-init')) {
             e.preventDefault();
-            jQuery(this).data('modal-init', true).lwModal({
+            jQuery(this).data('modal-init', true).glGhillie({
                 'extraClass' : 'large'
             });
         }
@@ -265,6 +265,6 @@ jQuery(document).ready(function() {
     // this is only for testing a remote hide of the modal
     jQuery('body').delegate('.hide a', 'click', function(e) {
         e.preventDefault();
-        jQuery(this).closest('.'+$.fn.lwModal.defaults.modalWrap).lwModal('hide');
+        jQuery(this).closest('.'+$.fn.glGhillie.defaults.modalWrap).glGhillie('hide');
     });
 });
