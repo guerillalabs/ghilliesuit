@@ -12,7 +12,7 @@
 
             return this.each(function() {
                 // if options exist, lets merge them with our default settings
-                var settings = $.extend({}, $.fn.lwModal.defaults, options);
+                var settings = $.extend({}, $.fn.ghillie.defaults, options);
 
                 // the function that controls the logic for what happens next
                 function modalLogic(e) {
@@ -25,11 +25,11 @@
 
                     // if the modal already exists, let's fire the toggle method (we're relying on the url being set as the rel value for the modal in the build method to tie the link and the modal box together - we're also making sure the modal_life data attribute is the same as the link to keep the different types of modals segregated)
                     if (vars.$modal.length) {
-                        $(this).lwModal('toggle', vars.$modal);
+	                        $(this).ghillie('toggle', vars.$modal);
 
                     // if it doesn't already exist, let's build it
                     } else {
-                        $(this).lwModal('build', settings, vars);
+                        $(this).ghillie('build', settings, vars);
                     }
                 }
 
@@ -43,7 +43,7 @@
         build : function(settings, vars) {
             return this.each(function() {
                 // go ahead and create and show the loading message (so it is in place while the modal is being created - especially important if the message comes from an external page)
-                $(this).lwModal('loadingCreate');
+                $(this).ghillie('loadingCreate');
 
                 // see if there should be an extra class on the modal
                 var extraClass = '';
@@ -81,18 +81,18 @@
 
                     // build the backdrop if it doesn't exist
                     // first, let's assign the backdrop to a variable
-                    $.fn.lwModal.$backdrop = $('.'+settings.backdrop);
-                    if (!$.fn.lwModal.$backdrop.length) {
-                        vars.$modal.lwModal('backdropCreate', settings);
+                    $.fn.ghillie.$backdrop = $('.'+settings.backdrop);
+                    if (!$.fn.ghillie.$backdrop.length) {
+                        vars.$modal.ghillie('backdropCreate', settings);
                     }
 
                     // fire the show function as the last step of the build
-                    vars.$modal.lwModal('show', settings, vars);
+                    vars.$modal.ghillie('show', settings, vars);
 
                     // bind click functionality for close buttons
                     vars.$modal.find(".close a, a.close").bind('click.modal', function(e) {
                         e.preventDefault();
-                        vars.$modal.lwModal('hide');
+                        vars.$modal.ghillie('hide');
                     });
                 }
 
@@ -117,24 +117,24 @@
                 // check to see if it is visible
                 // if it is, do the logic for hiding or removing it
                 if (modal.is(':visible')) {
-                    modal.lwModal('hide');
+                    modal.ghillie('hide');
                 // if it's not visible, let's fire the show function
                 } else {
-                    modal.lwModal('show');
+                    modal.ghillie('show');
                 }
             });
         },
         show : function() {
             return this.each(function() {
                 // first, let's hide any currently visible modal boxes
-                $('.'+$.fn.lwModal.defaults.modalWrap).filter(':visible').each(function() {
-                    $(this).lwModal('hide');
+                $('.'+$.fn.ghillie.defaults.modalWrap).filter(':visible').each(function() {
+                    $(this).ghillie('hide');
                 });
                 // then, let's remove and currently visible loading graphics
-                $('.loading').lwModal('loadingRemove');
+                $('.loading').ghillie('loadingRemove');
 
                 // then, turn on the backdrop
-                $.fn.lwModal.$backdrop.lwModal('backdropShow');
+                $.fn.ghillie.$backdrop.ghillie('backdropShow');
 
                 // finally, display the modal
                 var windowHeight = $(window).height();
@@ -163,7 +163,7 @@
         hide : function() {
             return this.each(function() {
                 // first, turn off the backdrop
-                $.fn.lwModal.$backdrop.lwModal('backdropHide');
+                $.fn.ghillie.$backdrop.ghillie('backdropHide');
 
                 // then, hide the modal
                 $(this).fadeOut($(this).data('modal_speed'), function() {
@@ -176,15 +176,15 @@
         backdropCreate : function(settings) {
             return this.each(function() {
                 // build the backdrop
-                $.fn.lwModal.$backdrop = $('<div class="'+settings.backdrop+'" style="display:none;"></div>');
+                $.fn.ghillie.$backdrop = $('<div class="'+settings.backdrop+'" style="display:none;"></div>');
 
                 // insert the backdrop
-                $.fn.lwModal.$backdrop.insertBefore(this);
+                $.fn.ghillie.$backdrop.insertBefore(this);
 
                 // setup behavior so that a click on the backdrop hides the visible modal
-                $.fn.lwModal.$backdrop.click(function() {
+                $.fn.ghillie.$backdrop.click(function() {
                     $('.'+settings.modalWrap).filter(':visible').each(function() {
-                        $(this).lwModal('hide');
+                        $(this).ghillie('hide');
                     });
                 });
             });
@@ -193,17 +193,17 @@
             return this.each(function() {
                 $(this).css({
                     height: $(document).height()
-                }).fadeIn($.fn.lwModal.defaults.speed);
+                }).fadeIn($.fn.ghillie.defaults.speed);
             });
         },
         backdropHide : function() {
             return this.each(function() {
-                $(this).fadeOut($.fn.lwModal.defaults.speed);
+                $(this).fadeOut($.fn.ghillie.defaults.speed);
             });
         },
         loadingCreate : function() {
             return this.each(function() {
-                $('<div class="loading" style="display:none;"></div>').appendTo('body').fadeIn($.fn.lwModal.defaults.speed);
+                $('<div class="loading" style="display:none;"></div>').appendTo('body').fadeIn($.fn.ghillie.defaults.speed);
             });
         },
         loadingRemove: function() {
@@ -213,20 +213,20 @@
         }
     };
 
-    $.fn.glGhillie = function(method) {
+    $.fn.ghillie = function(method) {
         // Method calling logic
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || ! method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error('Method ' +  method + ' does not exist on jQuery.glGhillie');
+            $.error('Method ' +  method + ' does not exist on jQuery.ghillie');
         }
     };
 
     // Let's setup defaults that will be available to all of our methods
     // use settings to hold the default class names of the modal elements we'll be creating later
-    $.fn.glGhillie.defaults = {
+    $.fn.ghillie.defaults = {
         'modalWrap'     : 'modal_message',
         'modalHead'     : 'modal_header',
         'modalBody'     : 'modal_body',
@@ -236,35 +236,3 @@
         'extraClass'    : ''
     };
 })(jQuery);
-
-
-jQuery(document).ready(function() {
-    // the delegation is so the plugin functionality is attached to generated items or items that load on the page after this script first runs
-    jQuery('body').delegate('.modal', 'click', function(e) {
-        if (!jQuery(this).data('modal-init')) {
-            e.preventDefault();
-            jQuery(this).data('modal-init', true).glGhillie();
-        }
-    });
-    jQuery('body').delegate('.modal-large', 'click', function(e) {
-        if (!jQuery(this).data('modal-init')) {
-            e.preventDefault();
-            jQuery(this).data('modal-init', true).glGhillie({
-                'extraClass' : 'large'
-            });
-        }
-    });
-
-
-
-    // this is only for testing the delegation of the functionality
-    jQuery('.create a').click(function() {
-        jQuery(this).parent().after('<a class="author modal" title="generated test title" href="#author3">Author 3</a>');
-        return false;
-    });
-    // this is only for testing a remote hide of the modal
-    jQuery('body').delegate('.hide a', 'click', function(e) {
-        e.preventDefault();
-        jQuery(this).closest('.'+$.fn.glGhillie.defaults.modalWrap).glGhillie('hide');
-    });
-});

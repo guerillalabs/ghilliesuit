@@ -1,0 +1,114 @@
+.modal_message {
+  background: #ffffff;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#ffffff), to(#fafafa));
+  /* Konqueror */
+  background-image: -moz-linear-gradient(#ffffff, #fafafa);
+  /* FF 3.6+ */
+  background-image: -ms-linear-gradient(#ffffff, #fafafa);
+  /* IE10 */
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #fafafa));
+  /* Safari 4+, Chrome 2+ */
+  background-image: -webkit-linear-gradient(#ffffff, #fafafa);
+  /* Safari 5.1+, Chrome 10+ */
+  background-image: -o-linear-gradient(#ffffff, #fafafa);
+  /* Opera 11.10 */
+  background-image: linear-gradient(#ffffff, #fafafa);
+  /* the standard */
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 0 0 15px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,255,255,1);
+  -webkit-box-shadow: 0 0 15px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,255,255,1);
+  box-shadow: 0 0 15px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,255,255,1);
+  left: 50%;
+  margin: 0 0 0 -225px;
+  position: absolute;
+  top: 110px;
+  width: 450px;
+  z-index: 500;
+}
+.modal_message.large {
+  margin-left: -370px;
+  width: 740px;
+  background: #ffffff;
+}
+.modal_header {
+  background: #dbdbdb;
+  border-bottom: 1px solid #bbbbbb;
+  -moz-border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+  padding: 0 20px;
+}
+.modal_header h2 {
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 24px;
+  margin: 0;
+  padding: 12px 20px 11px 0;
+  position: relative;
+}
+.modal_header .close_button {
+  position: absolute;
+  right: -20px;
+  text-align: right;
+  top: 7px;
+}
+.modal_header .close_button a {
+  color: #999999;
+  display: block;
+  font-weight: bold;
+  padding: 5px 20px 5px 5px;
+  text-decoration: none;
+  -webkit-transition: all 0.15s linear;
+  -moz-transition: all 0.15s linear;
+  transition: all 0.15s linear;
+}
+.modal_header .close_button a:hover,
+.modal_header .close_button a:focus,
+.modal_header .close_button a:active {
+  color: #555555;
+}
+.modal_body {
+  padding: 0 20px;
+}
+.modal_footer {
+  background: #dbdbdb;
+  border-top: 1px solid #bbbbbb;
+  -moz-border-radius: 0 0 3px 3px;
+  -webkit-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+  clear: both;
+  padding: 0 20px;
+  text-align: right;
+}
+.modal_footer .button a {
+  margin-right: 0;
+  margin-left: 6px;
+}
+.modal_overlay {
+  background: url(../img/overlay-black.png) repeat 0 0;
+  background: rgba(0, 0, 0, 0.4);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 450;
+}
+.js .modal-content {
+  display: none;
+}
+.loading {
+  background: #000000 url(../img/loading-big-black.gif) no-repeat 50% 50%;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  height: 70px;
+  left: 50%;
+  margin: -35px 0 0 -35px;
+  position: fixed;
+  top: 50%;
+  width: 70px;
+}
