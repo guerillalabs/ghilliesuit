@@ -160,17 +160,17 @@
                 $(this).fadeIn($(this).data('modal_speed'));
             });
         },
-        hide : function() {
+        hide : function(remove) {
             return this.each(function() {
                 // first, turn off the backdrop
                 $.fn.ghillie.$backdrop.ghillie('backdropHide');
 
                 // then, hide the modal
-                $(this).fadeOut($(this).data('modal_speed'), function() {
-                    if (!$(this).data('modal_life') || $(this).data('modal_life').toLowerCase() !== 'persist') {
-                        $(this).remove();
-                    }
-                });
+				$(this).fadeOut($(this).data('modal_speed'), function() {
+					if ((!$(this).data('modal_life') || $(this).data('modal_life').toLowerCase() !== 'persist' || remove === 'remove') && remove !== 'persist') {
+						$(this).remove();
+					}
+				});
             });
         },
         backdropCreate : function(settings) {
