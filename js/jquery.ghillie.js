@@ -50,8 +50,13 @@
                 if (settings.extraClass) {
                     extraClass = ' ' + settings.extraClass;
                 }
+                // see if there should be a modal_life attribute on the modal
+                var modalLife = '';
+                if (vars.modalData.modal_life) {
+	                modalLife = ' data-modal_life="' + vars.modalData.modal_life + '"'
+                }
                 // start building the modal box
-                vars.$modal = $('<div class="'+settings.modalWrap+extraClass+'" rel="'+vars.link+'" data-modal_life="'+vars.modalData.modal_life+'" data-modal_speed="'+settings.speed+'" style="display:none;"></div>');
+                vars.$modal = $('<div class="'+settings.modalWrap+extraClass+'" rel="'+vars.link+'"'+modalLife+' data-modal_speed="'+settings.speed+'" style="display:none;"></div>');
 
                 // add the modal to the document - we add it here so that dom events targeting the modal content fire correctly
                 vars.$modal.appendTo('body');
