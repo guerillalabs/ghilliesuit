@@ -53,6 +53,9 @@
                 // start building the modal box
                 vars.$modal = $('<div class="'+settings.modalWrap+extraClass+'" rel="'+vars.link+'" data-modal_life="'+vars.modalData.modal_life+'" data-modal_speed="'+settings.speed+'" style="display:none;"></div>');
 
+                // add the modal to the document - we add it here so that dom events targeting the modal content fire correctly
+                vars.$modal.appendTo('body');
+
                 // assign all data elements from the calling link to the created modal (we'll use this for persistance rules and other settings later)
                 vars.$modal.data(vars.modalData);
 
@@ -75,9 +78,6 @@
                     if (typeof($.fn.bgiframe) === 'function') {
                         vars.$modal.bgiframe();
                     }
-
-                    // add the modal to the document
-                    vars.$modal.appendTo('body');
 
                     // build the backdrop if it doesn't exist
                     // first, let's assign the backdrop to a variable
